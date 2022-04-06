@@ -7,6 +7,12 @@
 	"license": "MIT",
 	"bin": "./cli",
 	"keywords": ["playwright", "protractor", "migration", "conversion", "e2e", "test", "browser"],
+	"homepage": "https://github.com/AmadeusITGroup/protractor-to-playwright#readme",
+  	"bugs": "https://github.com/AmadeusITGroup/protractor-to-playwright/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/AmadeusITGroup/protractor-to-playwright.git"
+  	},
 	"scripts": {
 		"lint": "eslint .",
 		"prepare": "npm run build",
