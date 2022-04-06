@@ -1,0 +1,13 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"outDir": "./dist/out-tsc",
+		"moduleResolution": "node",
+		"target": "es2015",
+		"esModuleInterop": true,
+		"strict": true,
+		"noImplicitAny": false,
+		"lib": ["es2018", "dom"],
+	},
+	"include": ["scripts"]
+}
