@@ -1,5 +1,8 @@
 # Protractor to Playwright migration tool
 
+[![npm](https://img.shields.io/npm/v/@amadeus-it-group/protractor-to-playwright)](https://www.npmjs.com/package/@amadeus-it-group/protractor-to-playwright)
+[![codecov](https://codecov.io/gh/AmadeusITGroup/protractor-to-playwright/branch/master/graph/badge.svg)](https://codecov.io/gh/AmadeusITGroup/protractor-to-playwright)
+
 This tool is designed to automatically migrate code from Protractor to Playwright. It is inspired by the ["Migrating from Protractor" guide](https://playwright.dev/docs/protractor) in Playwright documentation.
 
 ## Commands
