@@ -3,16 +3,26 @@
 	"version": "1.0.0",
 	"description": "Command line tool that automatically migrates tests from protractor to playwright.",
 	"author": "Fabrice Basso <fabrice.basso@amadeus.com>",
-	"contributors": ["David-Emmanuel Divernois <david-emmanuel.divernois@amadeus.com>"],
+	"contributors": [
+		"David-Emmanuel Divernois <david-emmanuel.divernois@amadeus.com>"
+	],
 	"license": "MIT",
 	"bin": "./cli",
-	"keywords": ["playwright", "protractor", "migration", "conversion", "e2e", "test", "browser"],
+	"keywords": [
+		"playwright",
+		"protractor",
+		"migration",
+		"conversion",
+		"e2e",
+		"test",
+		"browser"
+	],
 	"homepage": "https://github.com/AmadeusITGroup/protractor-to-playwright#readme",
-  	"bugs": "https://github.com/AmadeusITGroup/protractor-to-playwright/issues",
+	"bugs": "https://github.com/AmadeusITGroup/protractor-to-playwright/issues",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/AmadeusITGroup/protractor-to-playwright.git"
-  	},
+	},
 	"scripts": {
 		"lint": "eslint .",
 		"prepare": "npm run build",
