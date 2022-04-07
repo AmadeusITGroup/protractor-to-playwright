@@ -1,0 +1,25 @@
+name: update
+
+on:
+  schedule:
+    - cron: "0 4 1 * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Node.js version
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+      - run: npx npm-check-updates -u
+      - run: npm install
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v4.0.1
+        with:
+          commit-message: Update all dependencies
+          branch: dependencies
+          title: Update all dependencies
+          body: Update all dependencies
