@@ -2,7 +2,7 @@ import { CallExpression, Node, ArrowFunction, FunctionExpression, SyntaxKind } f
 import { buildString } from './build-string';
 import { ChildrenContext } from './types';
 import { newProject, getFileTrace } from './traversal';
-import chalk from 'chalk';
+import color from 'picocolors';
 import path from 'path';
 import fs from 'fs';
 
@@ -444,7 +444,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							break;
 
 						default:
-							log(chalk.yellow(`${getFileTrace(node)} : missing transform for ElementFinder.${expressionName}`));
+							log(color.yellow(`${getFileTrace(node)} : missing transform for ElementFinder.${expressionName}`));
 					}
 				} else if (leftType.endsWith(".ElementArrayFinder")) {
 					switch (expressionName) {
@@ -486,7 +486,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							queueTransform(function() {
 								expression.replaceWithText(`(await makeLocatorArray(${expression.getExpression().getText()}))./* FIXME: filter must be managed specifically */filter`);
 							}, expression);
-							log(chalk.yellow(`${getFileTrace(node)}: ElementArrayFinder.filter cannot be fully transformed. You must manage the resulting expression.`));
+							log(color.yellow(`${getFileTrace(node)}: ElementArrayFinder.filter cannot be fully transformed. You must manage the resulting expression.`));
 							break;
 						case 'count':
 						case 'first':
@@ -494,7 +494,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							// Nothing to do
 							break;
 						default:
-							log(chalk.yellow(`${getFileTrace(node)} : missing transform for ElementArrayFinder.${expressionName}`));
+							log(color.yellow(`${getFileTrace(node)} : missing transform for ElementArrayFinder.${expressionName}`));
 							break;
 					}
 				} else if (leftType.endsWith(".ProtractorBrowser")) {
@@ -552,7 +552,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 						}
 
 						default:
-							log(chalk.yellow(`${getFileTrace(node)} : missing transform for ProtractorBrowser.${expressionName}`));
+							log(color.yellow(`${getFileTrace(node)} : missing transform for ProtractorBrowser.${expressionName}`));
 							break;
 					}
 				} else if (leftType.endsWith(".ElementHelper")) {
@@ -633,7 +633,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							break;
 
 						default:
-							log(chalk.yellow(`${getFileTrace(node)} : missing transform for ProtractorBy.${expressionName}`));
+							log(color.yellow(`${getFileTrace(node)} : missing transform for ProtractorBy.${expressionName}`));
 							break;
 					}
 				} else if (leftType.endsWith(".ProtractorExpectedConditions")) {
