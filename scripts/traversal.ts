@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Project, Node, SourceFile } from 'ts-morph';
-import chalk from 'chalk';
+import color from 'picocolors';
 import * as cliProgress from 'cli-progress';
 
 export function newProject<Context extends Record<string, any>>(config: {
@@ -25,7 +25,7 @@ export function newProject<Context extends Record<string, any>>(config: {
 		progressBar = new cliProgress.SingleBar({
 			hideCursor: true,
 			clearOnComplete: true,
-			format: `${title} ${chalk.cyan('{bar}')} | {percentage}% | {value}/{total} | {filename}`,
+			format: `${title} ${color.cyan('{bar}')} | {percentage}% | {value}/{total} | {filename}`,
 		}, cliProgress.Presets.shades_classic);
 		progressBar.start(length, 0, {filename: ""});
 	};
@@ -157,7 +157,7 @@ export function newProject<Context extends Record<string, any>>(config: {
 		}
 
 		if (convertionErrors.length) {
-			log(chalk.yellow(`Errors found during the conversion in the following files:`));
+			log(color.yellow(`Errors found during the conversion in the following files:`));
 			convertionErrors.forEach(({filetrace, error}) => {
 				log(`${filetrace} : ${error}`);
 			});
