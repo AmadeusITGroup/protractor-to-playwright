@@ -8,6 +8,7 @@ import fs from 'fs';
 
 const importFromProtractorRegExp = /^import\(".*?node_modules\/protractor\/.*?"\)/;
 const promiseRegExp = /^import\(".*?node_modules\/@types\/selenium-webdriver\/index"\)\.promise\.Promise<.*>$/;
+const jasmineMatcherRegExp = /^jasmine\.(ArrayLike)?Matchers<.*>$/;
 
 const elementFinderRegExp = /(ElementFinder|ElementArrayFinder)$/;
 const elementArrayFinderRegExp = /ElementArrayFinder$/;
@@ -323,13 +324,24 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 				}
 
 				case 'expect': {
-					context.useExpect = true;
+					context.useExpect = {messages: []};
+					const expectInfo = context.useExpect;
 					const firstArg = node.getArguments()[0];
 					if (firstArg && promiseRegExp.test(firstArg.getType().getText())) {
 						queueTransform(function() {
 							firstArg.replaceWithText(`await ${firstArg.getText()}`);
 						}, firstArg);
 					}
+					queueTransform(function () {
+						const messages = expectInfo.messages;
+						if (messages.length > 0) {
+							// inserts a comma between each message:
+							for (let i = messages.length - 1; i > 0; i--) {
+								messages.splice(i, 0, ", ");
+							}
+							node.addArgument(buildString(...expectInfo.messages));
+						}
+					}, node);
 					break;
 				}
 
@@ -656,6 +668,28 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 						// Force the 'ExpectedConditions' usage
 						left.replaceWithText('ExpectedConditions');
 					}, left)
+				}
+			} else if (jasmineMatcherRegExp.test(leftType)) {
+				const args = node.getArguments();
+				const argsLength = args.length;
+				const useExpectInfo = context.useExpect;
+				if (useExpectInfo && argsLength > 0) {
+					const expressionName = expression.getName();
+					if (expressionName === "withContext") {
+						useExpectInfo.messages.push(args[0]);
+						queueTransform(function() {
+							node.replaceWithText(expression.getExpression().getText());
+						}, node);
+					} else {
+						// remove expectationFailOutput argument (always the last one)
+						const isExpectMessage = expression.getType().getCallSignatures().map(signature => signature.getParameters()[argsLength - 1]?.getName()).filter(item => !!item).every(item => item === 'expectationFailOutput');
+						if (isExpectMessage) {
+							useExpectInfo.messages.push(args[argsLength - 1]);
+							queueTransform(function() {
+								node.removeArgument(argsLength - 1);
+							}, node);
+						}
+					}
 				}
 			}
 		}
