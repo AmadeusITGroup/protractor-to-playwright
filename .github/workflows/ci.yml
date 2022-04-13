@@ -4,8 +4,8 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
       - uses: actions/cache@v3
@@ -17,6 +17,6 @@ jobs:
       - run: npm ci
       - run: npm run test
       - run: npm run lint
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@e3c560433a6cc60aec8812599b7844a7b4fa0d71 # v3.0.0
         with:
           file: coverage/lcov.info
