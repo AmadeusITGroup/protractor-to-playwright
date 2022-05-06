@@ -1,3 +1,5 @@
+import type { Node } from "ts-morph";
+
 /**
  * Expose information coming from the child nodes
  */
@@ -24,9 +26,11 @@ export interface ChildrenContext {
     useTest?: boolean;
 
     /**
-     * If true, the playwright expect is used in the descendants.
+     * If defined, the playwright expect is used in the descendants.
+     * When defined, messages is an array of messages to attach
+     * to the expect call.
      */
-    useExpect?: boolean;
+    useExpect?: { messages: (string | Node)[] };
 
     /**
      * If true, the Locator type is used in the descendants.
