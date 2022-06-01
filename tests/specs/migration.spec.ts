@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as glob from 'glob';
-import * as mime from 'mime';
 import {runCli} from '../convert';
 import {execFile} from './util/execFile';
 
@@ -18,7 +17,6 @@ test.describe('Conversion tool', () => {
 	let filteredFiles = files;
 
 	test.beforeAll(async () => {
-		mime.define({'text/plain': ['ts']}, true);
 		// GREP and GREPFLAG are defined in global-setup.ts
 		const grep = new RegExp(process.env.GREP, process.env.GREPFLAG);
 		if (grep.source !== '.*') {
