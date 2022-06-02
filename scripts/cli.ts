@@ -33,14 +33,14 @@ export async function cli(args: string[]) {
 		})
 		.option('file', {
 			alias: 'f',
-			description: 'File pattern of the files to include.',
+			description: 'Patterns specifying files to include. Can also be specified as positional arguments. If positional arguments are used, patterns specified through the --file option are ignored.',
 			type: 'string',
 			array: true,
 			default: ['**/*.{ts, js}']
 		})
 		.option('exclude', {
 			alias: 'x',
-			description: 'Pattern specifying files to exclude.',
+			description: 'Patterns specifying files to exclude.',
 			type: 'string',
 			array: true,
 			default: ['**/node_modules']
@@ -61,6 +61,10 @@ export async function cli(args: string[]) {
 
 	console.log('Start migration');
 
+	if (argv._.length > 0) {
+		// positional arguments take priority over the -f/--file option:
+		argv.file.splice(0, argv.file.length, ...argv._.map(arg => `${arg}`));
+	}
 	const {cwd, src, dst, tsconfig, file, exclude, logfile, test} = argv;
 	const project = newProject({
 		src: path.resolve(cwd, src),

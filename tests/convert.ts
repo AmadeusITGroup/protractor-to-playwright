@@ -19,7 +19,8 @@ export async function runCli(files: string[] | undefined = undefined) {
 		`--dst='converted'`,
 		`--tsconfig='protractor/tsconfig.json'`,
 		'--colors',
-		...(files?.map((file) => `--file=${file}`) ?? [])
+		'--',
+		...files ?? []
 	]);
 }
 
