@@ -15,6 +15,12 @@ module.exports = {
 				'@typescript-eslint/ban-types': 'off',
 			},
 		},
+		{
+			files: ['tests/protractor/**/*.js'],
+			env: {
+				jasmine: true
+			}
+		},
 	],
 	rules: {
 		indent: ['error', 'tab', {SwitchCase: 1}],

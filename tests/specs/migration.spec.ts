@@ -13,7 +13,7 @@ function convertLineEnd(content) {
 test.describe('Conversion tool', () => {
 	const snapshotDir = path.join(__dirname, "..", "playwright");
 	const convertedDir = path.join(__dirname, "..", "converted");
-	const files = glob.sync('**/*.ts', {cwd: path.join(__dirname, '../protractor'), ignore: ["**/node_modules/**"]});
+	const files = glob.sync('**/*.{ts,js}', {cwd: path.join(__dirname, '../protractor'), ignore: ["**/node_modules/**"]});
 	let filteredFiles = files;
 
 	test.beforeAll(async () => {
@@ -31,7 +31,7 @@ test.describe('Conversion tool', () => {
 
 	test('compile with typescript', async () => {
 		await execFile(
-			'node', [require.resolve('typescript/bin/tsc'), '--target', 'es5', '--noEmit', ...filteredFiles],
+			'node', [require.resolve('typescript/bin/tsc'), '--target', 'es5', '--allowJs', '--noEmit', ...filteredFiles],
 			{ cwd: path.join(__dirname, '../converted') }
 		);
 	});

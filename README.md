@@ -19,7 +19,7 @@ Basically, it takes these arguments:
 - src: Root folder of the e2e protractor tests. Current directory by default,
 - dst: Destination folder of the converted files. By default, the files are replaced at the same location,
 - tsconfig: tsconfig file, relative to the current directory. Whereas this parameter is not mandatory, it is advised to fill it if your e2e project is setup with a tsconfig.
-- file: optional glob pattern of the files to convert. By default '**/*.{ts, js}'.
+- file: optional glob pattern of the files to convert. By default '**/*.{ts,js}'.
 - test: optional parameter to convert the it keywords to test or test.step. You can prefer to use the steps if your successive tests in your files are not independant. It can take the following values:
   - test (default): 'it' are replaced by 'test', the {page} parameter is inserted and the setPage(page) is called at the first line to save the page globally.
   - step: 'it' are replaced by 'await test.step'. You will have to finish the conversion by wrapping your test.step in a test.

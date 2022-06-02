@@ -36,7 +36,7 @@ export async function cli(args: string[]) {
 			description: 'File pattern of the files to include.',
 			type: 'string',
 			array: true,
-			default: ['**/*.{ts, js}']
+			default: ['**/*.{ts,js}']
 		})
 		.option('exclude', {
 			alias: 'x',
