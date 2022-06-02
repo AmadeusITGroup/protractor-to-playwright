@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Project, Node, SourceFile } from 'ts-morph';
+import { Project, Node, SourceFile, ProjectOptions } from 'ts-morph';
 import color from 'picocolors';
 import * as cliProgress from 'cli-progress';
 
@@ -64,7 +64,11 @@ export function newProject<Context extends Record<string, any>>(config: {
 		filebuffer.write(msg + '\n');
 	}
 
-	const projectConfig = {};
+	const projectConfig: ProjectOptions = {
+		compilerOptions: {
+			allowJs: true
+		}
+	};
 	if (tsconfig) {
 		Object.assign(projectConfig, {
 			tsConfigFilePath: tsconfig,
