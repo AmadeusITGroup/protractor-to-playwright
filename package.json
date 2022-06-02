@@ -1,6 +1,6 @@
 {
 	"name": "@amadeus-it-group/protractor-to-playwright",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Command line tool that automatically migrates tests from protractor to playwright.",
 	"author": "Fabrice Basso <fabrice.basso@amadeus.com>",
 	"contributors": [
