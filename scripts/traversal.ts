@@ -11,6 +11,7 @@ export function newProject<Context extends Record<string, any>>(config: {
 	file: string[];
 	exclude: string[];
 	logfile: string;
+	ambientFiles?: string[];
 }, nodeCallback: (node: Node, context: Partial<Context>, project: ReturnType<typeof newProject>) => void) {
 
 	let progressBar: cliProgress.Bar | null = null;
@@ -54,7 +55,7 @@ export function newProject<Context extends Record<string, any>>(config: {
         error,
     }> = [];
 
-	const {src, dst, tsconfig, file: filePatterns, exclude, logfile} = config;
+	const {src, dst, tsconfig, file: filePatterns, exclude, logfile, ambientFiles} = config;
 
 	const filebuffer = fs.createWriteStream(logfile);
 	function log(msg, screen = true) {
@@ -78,6 +79,7 @@ export function newProject<Context extends Record<string, any>>(config: {
 
 	const project = new Project(projectConfig);
 
+	const ambientFilesSet = new Set(project.addSourceFilesAtPaths(ambientFiles ?? []));
 	project.addSourceFilesAtPaths(filePatterns.map(pattern => path.join(src, pattern)).concat(exclude.map(pattern => `!${path.join(src, pattern)}`)));
 
 	const srcPath = src.replace(/\\/g, '/') + '/';
@@ -85,7 +87,7 @@ export function newProject<Context extends Record<string, any>>(config: {
 
 	function transformFiles() {
 		filesToSave = [];
-		const sourceFiles = project.getSourceFiles();
+		const sourceFiles = project.getSourceFiles().filter(file => !ambientFilesSet.has(file));
 		const length = sourceFiles.length;
 		startProgressBar("Analysing", length);
 		sourceFiles.forEach((sourceFile, index) => {
