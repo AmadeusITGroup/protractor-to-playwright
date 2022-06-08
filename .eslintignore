@@ -2,3 +2,5 @@
 /node_modules
 /tests/playwright/
 /tests/converted/
+/playwright-report
+/test-results

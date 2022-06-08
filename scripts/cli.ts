@@ -73,6 +73,7 @@ export async function cli(args: string[]) {
 		file,
 		exclude,
 		logfile: path.resolve(cwd, logfile),
+		ambientFiles: [require.resolve("../global.d.ts")]
 	}, getTransformNode({stepStrategy: test as 'test' | 'step'}));
 
 	project.transformFiles();

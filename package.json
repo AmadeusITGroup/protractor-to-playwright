@@ -47,7 +47,6 @@
 		"eslint": "^8.16.0",
 		"glob": "^8.0.3",
 		"nyc": "^15.1.0",
-		"protractor": "^7.0.0",
 		"rollup": "^2.75.4",
 		"ts-node": "^10.8.0",
 		"tslib": "^2.4.0",
@@ -55,6 +54,7 @@
 	},
 	"dependencies": {
 		"picocolors": "^1.0.0",
+		"protractor": "^7.0.0",
 		"cli-progress": "^3.11.1",
 		"ts-morph": "^15.0.0",
 		"yargs": "^17.5.1"
@@ -62,6 +62,7 @@
 	"files": [
 		"dist",
 		"cli",
-		"scripts/playwright-utils.ts"
+		"scripts/playwright-utils.ts",
+		"global.d.ts"
 	]
 }
