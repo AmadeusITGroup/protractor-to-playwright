@@ -35,6 +35,8 @@ test.describe('protractorBy conversion', () => {
 		// by.xpath('a');
 		'xpath=a';
 
+		// by.name('a');
+		'[name="a"]';
 
 	});
 });

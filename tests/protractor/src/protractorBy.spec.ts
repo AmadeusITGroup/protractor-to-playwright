@@ -34,6 +34,8 @@ describe('protractorBy conversion', () => {
 		// by.xpath('a');
 		by.xpath('a');
 
+		// by.name('a');
+		by.name('a');
 
 	});
 });
