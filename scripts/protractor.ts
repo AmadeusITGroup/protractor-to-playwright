@@ -632,6 +632,12 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							}, node);
 							break;
 
+						case 'name':
+							queueTransform(function() {
+								node.replaceWithText(buildString('[name="', arg0, '"]'));
+							}, node);
+							break;
+
 						case 'model':
 							queueTransform(function() {
 								node.replaceWithText(buildString('[ng-model="', arg0, '"]'));
