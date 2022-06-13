@@ -29,6 +29,8 @@ test.describe('browser conversion', () => {
 		// await browser.getCurrentUrl();
 		page.url();
 
+		// await browser.getTitle();
+		await page.title();
 
 	});
 
