@@ -28,6 +28,8 @@ describe('browser conversion', () => {
 		// await browser.getCurrentUrl();
 		await browser.getCurrentUrl();
 
+		// await browser.getTitle();
+		await browser.getTitle();
 
 	});
 

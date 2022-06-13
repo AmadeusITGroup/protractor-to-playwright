@@ -558,6 +558,14 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							break;
 						}
 
+						case 'getTitle': {
+							const newText = `${getPageText(node, context)}.title`;
+							queueTransform(function() {
+								expression.replaceWithText(newText);
+							}, expression);
+							break;
+						}
+
 						case 'executeScript': {
 							transformExecuteScript(node, context, project);
 							break;
