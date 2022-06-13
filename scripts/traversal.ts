@@ -80,7 +80,22 @@ export function newProject<Context extends Record<string, any>>(config: {
 	const project = new Project(projectConfig);
 
 	const ambientFilesSet = new Set(project.addSourceFilesAtPaths(ambientFiles ?? []));
-	project.addSourceFilesAtPaths(filePatterns.map(pattern => path.join(src, pattern)).concat(exclude.map(pattern => `!${path.join(src, pattern)}`)));
+	const filePatternsResolved = filePatterns.map(pattern => path.join(src, pattern)).concat(exclude.map(pattern => `!${path.join(src, pattern)}`));
+	const sourceFiles = project.addSourceFilesAtPaths(filePatternsResolved);
+	const nbFiles = sourceFiles.length;
+
+	// Log context information
+	log(``);
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	log(`protractor-to-playwright version ${color.green(require('../package.json').version)}`);
+	log(`Source folder : ${color.green(src)}`);
+	log(`Destination folder : ${color.green(dst)}`);
+	log(`File patterns resolved to:`);
+	for(const pattern of filePatternsResolved) {
+		log(`  - ${color.green(color.green(pattern))}`);
+	}
+	log(`${nbFiles} file${nbFiles > 1 ? 's' : ''} found`);
+	log(``);
 
 	const srcPath = src.replace(/\\/g, '/') + '/';
 	const dstPath = dst.replace(/\\/g, '/') + '/';
