@@ -31,6 +31,8 @@ describe('browser conversion', () => {
 		// await browser.getTitle();
 		await browser.getTitle();
 
+		// await browser.takeScreenshot();
+		await browser.takeScreenshot();
 	});
 
 	it('should convert executeScript', async () => {

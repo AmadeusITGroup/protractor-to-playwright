@@ -63,5 +63,8 @@ describe('elementFinder conversion', () => {
 
 		// await elementFinder.getAttribute('src');
 		await elementFinder.getAttribute('src');
+
+		// await elementFinder.takeScreenshot();
+		await elementFinder.takeScreenshot();
 	});
 });

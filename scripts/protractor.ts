@@ -454,7 +454,14 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 						case 'getAttribute':
 							// Nothing to do
 							break;
-
+						case 'takeScreenshot': {
+							queueTransform(function() {
+								node.replaceWithText(
+									`${expression.getExpression().getText()}.screenshot().then(buffer => buffer.toString('base64'))`
+								);
+							}, node);
+							break;
+						}
 						default:
 							log(color.yellow(`${getFileTrace(node)} : missing transform for ElementFinder.${expressionName}`));
 					}
@@ -568,6 +575,14 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 
 						case 'executeScript': {
 							transformExecuteScript(node, context, project);
+							break;
+						}
+
+						case 'takeScreenshot': {
+							const newText = `${getPageText(node, context)}.screenshot().then(buffer => buffer.toString('base64'))`;
+							queueTransform(function() {
+								node.replaceWithText(newText);
+							}, node);
 							break;
 						}
 

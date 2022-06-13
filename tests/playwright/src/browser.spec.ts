@@ -32,6 +32,8 @@ test.describe('browser conversion', () => {
 		// await browser.getTitle();
 		await page.title();
 
+		// await browser.takeScreenshot();
+		await page.screenshot().then(buffer => buffer.toString('base64'));
 	});
 
 	test('should convert executeScript', async ({page}) => {

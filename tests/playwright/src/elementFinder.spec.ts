@@ -66,5 +66,8 @@ test.describe('elementFinder conversion', () => {
 
 		// await elementFinder.getAttribute('src');
 		await elementFinder.getAttribute('src');
+
+		// await elementFinder.takeScreenshot();
+		await elementFinder.screenshot().then(buffer => buffer.toString('base64'));
 	});
 });
