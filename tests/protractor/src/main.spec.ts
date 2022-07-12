@@ -21,6 +21,12 @@ describe('common conversion', () => {
 
 	});
 
+	// it(`add necessary 'async'`, () => {
+	it(`add necessary 'async'`, () => {
+		// $('.a').click();
+		$('.a').click();
+	});
+
 	it(`add necessary 'await'`, async () => {
 
 		// $('.a').click();

@@ -23,6 +23,13 @@ test.describe('common conversion', () => {
 
 	});
 
+	// it(`add necessary 'async'`, () => {
+	test(`add necessary 'async'`, async ({page}) => {
+        setPage(page);
+		// $('.a').click();
+		await page.locator('.a').click();
+	});
+
 	test(`add necessary 'await'`, async ({page}) => {
         setPage(page);
 
