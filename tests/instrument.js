@@ -23,7 +23,7 @@ global.__coverage__ = coverage;
 const trueReadFileSync = fs.readFileSync;
 fs.readFileSync = (...args) => {
 	const code = trueReadFileSync(...args);
-	const filename = args[0];
+	const filename = path.normalize(args[0]);
 	if (shouldInstrument(filename)) {
 		const isBuffer = Buffer.isBuffer(code);
 		const strCode = isBuffer ? code.toString('utf8') : code;
