@@ -4,7 +4,7 @@ import { Project, Node, SourceFile, ProjectOptions } from 'ts-morph';
 import color from 'picocolors';
 import * as cliProgress from 'cli-progress';
 
-export function newProject<Context extends Record<string, any>>(config: {
+export function newProject<Context extends {processing: boolean}>(config: {
 	src: string;
 	dst: string;
 	tsconfig?: string | null;
@@ -12,6 +12,8 @@ export function newProject<Context extends Record<string, any>>(config: {
 	exclude: string[];
 	logfile: string;
 	ambientFiles?: string[];
+	isContextToBeSaved: (node: Node) => boolean;
+	mergeContext: (parentContext: Partial<Context>, childContext: Partial<Context>, parentNode: Node, childNode: Node) => void
 }, nodeCallback: (node: Node, context: Partial<Context>, project: ReturnType<typeof newProject>) => void) {
 
 	let progressBar: cliProgress.Bar | null = null;
@@ -55,7 +57,7 @@ export function newProject<Context extends Record<string, any>>(config: {
         error,
     }> = [];
 
-	const {src, dst, tsconfig, file: filePatterns, exclude, logfile, ambientFiles} = config;
+	const {src, dst, tsconfig, file: filePatterns, exclude, logfile, ambientFiles, mergeContext, isContextToBeSaved} = config;
 
 	const filebuffer = fs.createWriteStream(logfile);
 	function log(msg, screen = true) {
@@ -81,8 +83,9 @@ export function newProject<Context extends Record<string, any>>(config: {
 
 	const ambientFilesSet = new Set(project.addSourceFilesAtPaths(ambientFiles ?? []));
 	const filePatternsResolved = filePatterns.map(pattern => path.join(src, pattern)).concat(exclude.map(pattern => `!${path.join(src, pattern)}`));
-	const sourceFiles = project.addSourceFilesAtPaths(filePatternsResolved);
-	const nbFiles = sourceFiles.length;
+	const sourceFiles = new Set(project.addSourceFilesAtPaths(filePatternsResolved));
+	const nbFiles = sourceFiles.size;
+	const savedContexts = new WeakMap<Node, Partial<Context>>();
 
 	// Log context information
 	log(``);
@@ -121,17 +124,27 @@ export function newProject<Context extends Record<string, any>>(config: {
 		finish();
 	}
 
-	/**
-     *
-     * @param node
-     * @param parentTree Used to store information about the nodes
-     */
 	function processNode(node: Node) {
 		// Context filled by the children
 		const context: Partial<Context> = {};
+		if (isContextToBeSaved(node)) {
+			const existingContext = savedContexts.get(node);
+			if (existingContext) {
+				return existingContext;
+			}
+			savedContexts.set(node, context);
+		}
+		context.processing = true;
 
 		node.forEachChild((childNode) => {
-			Object.assign(context, processNode(childNode))
+			const subContext = processNode(childNode);
+			if (subContext.processing) {
+				const filetrace = getFileTrace(node);
+				log(`Recursion error in ${filetrace}`);
+				convertionErrors.push({filetrace, error: new Error('Recursion error')});
+				return;
+			}
+			mergeContext(context, subContext, node, childNode);
 		});
 
 		try {
@@ -142,7 +155,15 @@ export function newProject<Context extends Record<string, any>>(config: {
 			convertionErrors.push({filetrace, error});
 		}
 
+		delete context.processing;
 		return context;
+	}
+
+	function publicProcessNode(node: Node) {
+		if (!isContextToBeSaved(node) || !sourceFiles.has(node.getSourceFile())) {
+			return null;
+		}
+		return processNode(node);
 	}
 
 	const queue: Array<{fn: () => void, node: Node}> = [];
@@ -188,7 +209,7 @@ export function newProject<Context extends Record<string, any>>(config: {
 
 	}
 
-	const api = {srcPath, dstPath, transformFiles, queueTransform, log};
+	const api = {srcPath, dstPath, transformFiles, queueTransform, log, processNode: publicProcessNode};
 	return api;
 
 }
