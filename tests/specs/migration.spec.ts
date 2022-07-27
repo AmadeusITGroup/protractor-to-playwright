@@ -31,7 +31,8 @@ test.describe('Conversion tool', () => {
 
 	test('compile with typescript', async () => {
 		await execFile(
-			'node', [require.resolve('typescript/bin/tsc'), '--target', 'es5', '--allowJs', '--noEmit', ...filteredFiles],
+			'node', [require.resolve('typescript/bin/tsc'), '--target', 'es5', '--allowJs', '--noEmit',
+				...filteredFiles.filter(file => !file.endsWith("callSkipFile.ts"))],
 			{ cwd: path.join(__dirname, '../converted') }
 		);
 	});
