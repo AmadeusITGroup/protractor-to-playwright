@@ -4,6 +4,10 @@ import type { Node } from "ts-morph";
  * Expose information coming from the child nodes
  */
 export interface ChildrenContext {
+    /**
+     * Whether this node is being processed currently.
+     */
+    processing?: boolean;
 
     /**
      * If true, the page variable is used in the descendants.
@@ -47,12 +51,6 @@ export interface ChildrenContext {
      */
      useLocatorArray?: boolean;
 
-    /**
-     * if true, "page: Page" is implemented in all the constructors of the given call
-     * (usefull only in a ClassDelaration on ClassExpression)
-     */
-    usePageInConstructor?: boolean
-
    /**
      * if true, ExpectedConditions is used
      */
@@ -68,4 +66,8 @@ export interface ChildrenContext {
      */
     useGetCssValue?: boolean
 
+    /**
+     * if true, the "await" keyword was added in the current function
+     */
+    addingAwait?: boolean
 }
