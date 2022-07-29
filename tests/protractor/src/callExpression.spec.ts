@@ -86,6 +86,20 @@ describe('callExpression conversion', () => {
 
 	});
 
+	it('should not add await when not required', async () => {
+		let promise;
+
+		// promise = $('.a').click();
+		promise = $('.a').click();
+
+		await promise;
+
+		// promise = $('.a').click();
+		promise = $('.a').click();
+
+		await promise;
+	});
+
 });
 
 xdescribe('xdescribe conversion', () => {
