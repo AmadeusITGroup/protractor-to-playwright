@@ -92,6 +92,21 @@ test.describe('callExpression conversion', () => {
 
 	});
 
+	test('should not add await when not required', async ({page}) => {
+        setPage(page);
+		let promise;
+
+		// promise = $('.a').click();
+		promise = page.locator('.a').click();
+
+		await promise;
+
+		// promise = $('.a').click();
+		promise = page.locator('.a').click();
+
+		await promise;
+	});
+
 });
 
 test.describe('xdescribe conversion', () => {

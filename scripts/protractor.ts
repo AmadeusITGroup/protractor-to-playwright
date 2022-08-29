@@ -115,7 +115,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 			}
 		} else if (Node.isExpressionStatement(node)) {
 			const expression = node.getExpression();
-			if (promiseRegExp.test(expression.getType().getText())) {
+			if (!Node.isBinaryExpression(expression) && promiseRegExp.test(expression.getType().getText())) {
 				queueTransform(function() {
 					expression.replaceWithText(`await ${expression.getText()}`);
 				}, expression);
