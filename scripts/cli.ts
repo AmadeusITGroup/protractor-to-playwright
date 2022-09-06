@@ -1,7 +1,7 @@
 import yargs from 'yargs';
 import path from 'path';
 import { newProject } from '../scripts/traversal';
-import { getTransformNode } from './protractor';
+import { getTransformNode, mergeContext, isFunction } from './protractor';
 
 
 export async function cli(args: string[]) {
@@ -73,7 +73,9 @@ export async function cli(args: string[]) {
 		file,
 		exclude,
 		logfile: path.resolve(cwd, logfile),
-		ambientFiles: [require.resolve("../global.d.ts")]
+		ambientFiles: [require.resolve("../global.d.ts")],
+		mergeContext,
+		isContextToBeSaved: isFunction
 	}, getTransformNode({stepStrategy: test as 'test' | 'step'}));
 
 	project.transformFiles();

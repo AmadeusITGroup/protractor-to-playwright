@@ -1,4 +1,4 @@
-import { CallExpression, Node, ArrowFunction, FunctionExpression, SyntaxKind } from 'ts-morph';
+import { CallExpression, Node, ArrowFunction, FunctionExpression, SyntaxKind, FunctionDeclaration, MethodDeclaration } from 'ts-morph';
 import { buildString } from './build-string';
 import { ChildrenContext } from './types';
 import { newProject, getFileTrace } from './traversal';
@@ -7,7 +7,8 @@ import path from 'path';
 import fs from 'fs';
 
 const importFromProtractorRegExp = /^import\(".*?node_modules\/protractor\/.*?"\)/;
-const promiseRegExp = /^import\(".*?node_modules\/@types\/selenium-webdriver\/index"\)\.promise\.Promise<.*>$/;
+const protractorPromiseRegExp = /^import\(".*?node_modules\/@types\/selenium-webdriver\/index"\)\.promise\.Promise<.*>$/;
+const standardPromiseRegExp = /^Promise<.*>$/;
 const jasmineMatcherRegExp = /^jasmine\.(ArrayLike)?Matchers<.*>$/;
 
 const elementFinderRegExp = /(ElementFinder|ElementArrayFinder)$/;
@@ -52,6 +53,27 @@ function insertStatements(node: ArrowFunction | FunctionExpression, statement: s
 	});
 }
 
+export type FunctionType = FunctionDeclaration | FunctionExpression | ArrowFunction | MethodDeclaration;
+
+export const isFunction = (node: Node | undefined): node is FunctionType =>
+	Node.isFunctionDeclaration(node) || Node.isFunctionExpression(node) || Node.isArrowFunction(node) || Node.isMethodDeclaration(node);
+
+export const isPromiseReturningFunction = (node: FunctionType) => {
+	if (node.isAsync()) {
+		return true;
+	}
+	const type = node.getReturnType().getText();
+	return standardPromiseRegExp.test(type) || protractorPromiseRegExp.test(type);
+}
+
+export function mergeContext(parentContext: ChildrenContext, childContext: ChildrenContext, parentNode: Node, childNode: Node): void {
+	if (isFunction(childNode)) {
+		childContext = {...childContext}; // avoid changing the child context (which is saved)
+		delete childContext.addingAwait; // addingAwait must not pass through function boundaries
+	}
+	Object.assign(parentContext, childContext);
+}
+
 export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}) {
 
 	let isUtilsFileCreated = false;
@@ -83,6 +105,16 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 
 		if (Node.isCallExpression(node)) {
 			transformCallExpression(node, context, project);
+		} else if (isFunction(node)) {
+			if (context.addingAwait) {
+				// the "await" keyword was added in the function
+				if (!node.isAsync()) {
+					// make the function async:
+					queueTransform(function () {
+						node.setIsAsync(true);
+					}, node);
+				}
+			}
 		} else if (Node.isImportDeclaration(node)) {
 			if (protractorModuleregExp.test(node.getModuleSpecifierValue())) {
 				queueTransform(function() {
@@ -115,7 +147,8 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 			}
 		} else if (Node.isExpressionStatement(node)) {
 			const expression = node.getExpression();
-			if (!Node.isBinaryExpression(expression) && promiseRegExp.test(expression.getType().getText())) {
+			if (!Node.isBinaryExpression(expression) && protractorPromiseRegExp.test(expression.getType().getText())) {
+				context.addingAwait = true;
 				queueTransform(function() {
 					expression.replaceWithText(`await ${expression.getText()}`);
 				}, expression);
@@ -207,6 +240,51 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 		}
 	}
 
+	function addAwaitWithNeededParentheses(node: Node) {
+		let text = `await ${node.getText()}`;
+		const parentNode = node.getParent();
+		const dontNeedParentheses = Node.isExpressionStatement(parentNode) || Node.isVariableDeclaration(parentNode) || Node.isBinaryExpression(parentNode);
+		if (!dontNeedParentheses) {
+			text = `(${text})`;
+		}
+		node.replaceWithText(text);
+	}
+
+	function checkDefinitionsAndAddAwaitIfNeeded(node: CallExpression, definitions: (Node | undefined)[], context: ChildrenContext, project: ReturnType<typeof newProject>) {
+		const {queueTransform, processNode} = project;
+		let needAwait = false;
+		const processingContexts: ChildrenContext[] = [];
+		definitions = [...definitions];
+		for (let defNode of definitions) {
+			if (Node.isVariableDeclaration(defNode) || Node.isPropertyAssignment(defNode) || Node.isShorthandPropertyAssignment(defNode)) {
+				defNode = defNode.getInitializer();
+			}
+			if (isFunction(defNode) && !isPromiseReturningFunction(defNode)) {
+				// check if the function will become async after transforms:
+				const defContext: ChildrenContext | null = processNode(defNode);
+				if (defContext) {
+					if (defContext.addingAwait) {
+						needAwait = true;
+					} else if (defContext.processing) {
+						processingContexts.push(defContext);
+					}
+				}
+			} else if (Node.isIdentifier(defNode)) {
+				definitions.push(...defNode.getDefinitionNodes());
+			}
+		}
+		if (needAwait) {
+			context.addingAwait = true;
+			queueTransform(() => addAwaitWithNeededParentheses(node), node);
+		} else if (processingContexts.length > 0) {
+			queueTransform(function () {
+				if (processingContexts.some(value => value.addingAwait)) {
+					addAwaitWithNeededParentheses(node);
+				}
+			}, node);
+		}
+	}
+
 	function transformCallExpression(node: CallExpression, context: ChildrenContext, project: ReturnType<typeof newProject>) {
 		const {queueTransform, log} = project;
 
@@ -264,6 +342,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							expression.replaceWithText('test');
 						}, expression);
 					} else if (stepStrategy === 'step') {
+						context.addingAwait = true;
 						queueTransform(function() {
 							expression.replaceWithText('test.step');
 							node.replaceWithText(`await ${node.getText()}`);
@@ -327,7 +406,8 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 					context.useExpect = {messages: []};
 					const expectInfo = context.useExpect;
 					const firstArg = node.getArguments()[0];
-					if (firstArg && promiseRegExp.test(firstArg.getType().getText())) {
+					if (firstArg && protractorPromiseRegExp.test(firstArg.getType().getText())) {
+						context.addingAwait = true;
 						queueTransform(function() {
 							firstArg.replaceWithText(`await ${firstArg.getText()}`);
 						}, firstArg);
@@ -356,6 +436,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 				}
 
 				default:
+					checkDefinitionsAndAddAwaitIfNeeded(node, expression.getDefinitionNodes(), context, project);
 					break;
 			}
 		} else if (Node.isPropertyAccessExpression(expression)) {
@@ -502,6 +583,7 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							break;
 						case 'filter':
 							context.useLocatorArray = true;
+							context.addingAwait = true;
 							queueTransform(function() {
 								expression.replaceWithText(`(await makeLocatorArray(${expression.getExpression().getText()}))./* FIXME: filter must be managed specifically */filter`);
 							}, expression);
@@ -719,6 +801,11 @@ export function getTransformNode({stepStrategy}: {stepStrategy: 'test' | 'step'}
 							}, node);
 						}
 					}
+				}
+			} else {
+				const declarations = left.getType().getProperty(expression.getName())?.getDeclarations();
+				if (declarations) {
+					checkDefinitionsAndAddAwaitIfNeeded(node, declarations, context, project);
 				}
 			}
 		}
