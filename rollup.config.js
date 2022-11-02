@@ -9,7 +9,7 @@ const prepareBuild = () => ({async buildStart() {
 	await fs.copyFile(path.join(__dirname, "scripts/playwright-utils.ts"), path.join(__dirname, "tests/playwright/playwright-utils.ts"));
 }});
 
-export default {
+module.exports = {
 	output: [
 		{
 			file: './dist/cli.js',
