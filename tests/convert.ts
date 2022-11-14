@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {cli} from '../scripts/cli';
+import { cli } from '../scripts/cli';
 
 export async function runCli(files: string[] | undefined = undefined) {
 	const convertedDir = path.join(__dirname, 'converted');

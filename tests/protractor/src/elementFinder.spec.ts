@@ -1,4 +1,4 @@
-import { ElementFinder, element } from 'protractor';
+import { element, ElementFinder } from 'protractor';
 
 describe('elementFinder conversion', () => {
 

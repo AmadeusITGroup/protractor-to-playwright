@@ -1,7 +1,7 @@
 import { FullConfig } from "@playwright/test";
+import fs from "fs/promises";
 import NYC from 'nyc';
 import path from "path";
-import fs from "fs/promises";
 
 async function globalSetup(config: FullConfig) {
 	const grep = <RegExp>config.grep

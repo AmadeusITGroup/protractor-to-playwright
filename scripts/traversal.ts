@@ -1,8 +1,8 @@
+import * as cliProgress from 'cli-progress';
 import * as fs from 'fs';
 import * as path from 'path';
-import { ModuleResolutionKind, Project, Node, SourceFile, ProjectOptions } from 'ts-morph';
 import color from 'picocolors';
-import * as cliProgress from 'cli-progress';
+import { ModuleResolutionKind, Node, Project, ProjectOptions, SourceFile } from 'ts-morph';
 
 export function newProject<Context extends {processing: boolean}>(config: {
 	src: string;

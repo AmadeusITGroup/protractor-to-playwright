@@ -1,4 +1,4 @@
-import { element, $, $$, ElementFinder, ElementArrayFinder } from "protractor";
+import { $, $$, element, ElementArrayFinder, ElementFinder } from "protractor";
 
 describe('common conversion', () => {
 
