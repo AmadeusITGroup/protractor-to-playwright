@@ -1,4 +1,4 @@
-import { ElementArrayFinder, $$ } from 'protractor';
+import { $$, ElementArrayFinder } from 'protractor';
 
 describe('elementFinder conversion', () => {
 

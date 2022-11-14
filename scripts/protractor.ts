@@ -1,10 +1,10 @@
-import { CallExpression, Node, ArrowFunction, FunctionExpression, SyntaxKind, FunctionDeclaration, MethodDeclaration } from 'ts-morph';
-import { buildString } from './build-string';
-import { ChildrenContext } from './types';
-import { newProject, getFileTrace } from './traversal';
-import color from 'picocolors';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+import color from 'picocolors';
+import { ArrowFunction, CallExpression, FunctionDeclaration, FunctionExpression, MethodDeclaration, Node, SyntaxKind } from 'ts-morph';
+import { buildString } from './build-string';
+import { getFileTrace, newProject } from './traversal';
+import { ChildrenContext } from './types';
 
 const importFromProtractorRegExp = /^import\(".*?node_modules\/protractor\/.*?"\)/;
 const protractorPromiseRegExp = /^import\(".*?node_modules\/@types\/selenium-webdriver\/index"\)\.promise\.Promise<.*>$/;

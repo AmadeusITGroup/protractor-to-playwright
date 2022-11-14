@@ -1,9 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { promises as fs } from 'fs';
-import * as path from 'path';
 import * as glob from 'glob';
-import {runCli} from '../convert';
-import {execFile} from './util/execFile';
+import * as path from 'path';
+import { runCli } from '../convert';
+import { execFile } from './util/execFile';
 
 const endLineRegExp = /(\r\n|\n\r)/g;
 function convertLineEnd(content) {

@@ -1,9 +1,9 @@
+import { expect, test } from '@playwright/test';
 import {
 	ExpressionStatement,
 	ParenthesizedExpression,
-	Project,
+	Project
 } from 'ts-morph';
-import { test, expect } from '@playwright/test';
 import { buildString } from '../../scripts/build-string';
 
 const expr = (snippet: string) => {
