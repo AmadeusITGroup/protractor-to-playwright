@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Project, Node, SourceFile, ProjectOptions } from 'ts-morph';
+import { ModuleResolutionKind, Project, Node, SourceFile, ProjectOptions } from 'ts-morph';
 import color from 'picocolors';
 import * as cliProgress from 'cli-progress';
 
@@ -69,7 +69,8 @@ export function newProject<Context extends {processing: boolean}>(config: {
 
 	const projectConfig: ProjectOptions = {
 		compilerOptions: {
-			allowJs: true
+			allowJs: true,
+			moduleResolution: ModuleResolutionKind.NodeJs,
 		}
 	};
 	if (tsconfig) {
