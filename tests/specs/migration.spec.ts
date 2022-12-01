@@ -11,7 +11,6 @@ function convertLineEnd(content) {
 }
 
 test.describe('Conversion tool', () => {
-	const snapshotDir = path.join(__dirname, "..", "playwright");
 	const convertedDir = path.join(__dirname, "..", "converted");
 	const files = glob.sync('**/*.{ts,js}', {cwd: path.join(__dirname, '../protractor'), ignore: ["**/node_modules/**"]});
 	let filteredFiles = files;
@@ -39,9 +38,7 @@ test.describe('Conversion tool', () => {
 
 	for(const file of files) {
 		// eslint-disable-next-line no-empty-pattern
-		test(`compare ${file}`, async function({}, testInfo) {
-			testInfo.snapshotSuffix = '';
-			testInfo.snapshotDir = snapshotDir;
+		test(`compare ${file}`, async function({}) {
 			const fileContent = await fs.readFile(path.join(convertedDir, file), "utf8");
 			expect(convertLineEnd(fileContent)).toMatchSnapshot({name: [file]});
 		});

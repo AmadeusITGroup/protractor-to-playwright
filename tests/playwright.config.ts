@@ -9,5 +9,6 @@ const config: PlaywrightTestConfig = {
 	forbidOnly: !!process.env.CI,
 	retries: 0,
 	reporter: [['list'], ['html', {open: 'never'}]],
+	snapshotPathTemplate: 'playwright/{arg}{ext}'
 };
 export default config;
