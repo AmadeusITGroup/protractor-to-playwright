@@ -178,9 +178,12 @@ export function newProject<Context extends {processing: boolean}>(config: {
 		const length = queue.length;
 		log(`Apply ${length} transformations`);
 		startProgressBar("Applying changes", length);
-		for(let value = 0; value < length; value++) {
-			const {fn, node} = queue[value];
-			updateProgressBar(value, node.getSourceFile().getFilePath());
+		let remaining = length;
+		while(remaining > 0) {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const {fn, node} = queue.shift()!;
+			updateProgressBar(length - remaining, node.getSourceFile().getFilePath());
+			remaining = queue.length;
 			try {
 				fn();
 			} catch (error) {
