@@ -12,7 +12,7 @@ function convertLineEnd(content) {
 
 test.describe('Conversion tool', () => {
 	const convertedDir = path.join(__dirname, "..", "converted");
-	const files = glob.sync('**/*.{ts,js}', {cwd: path.join(__dirname, '../protractor'), ignore: ["**/node_modules/**"]});
+	const files = glob.globSync('**/*.{ts,js}', {cwd: path.join(__dirname, '../protractor'), ignore: ["**/node_modules/**"]});
 	let filteredFiles = files;
 
 	test.beforeAll(async () => {
