@@ -32,32 +32,32 @@
 		"test": "playwright test -c tests/playwright.config.coverage.ts"
 	},
 	"devDependencies": {
-		"@babel/core": "7.21.4",
+		"@babel/core": "7.21.5",
 		"@babel/plugin-syntax-typescript": "7.21.4",
-		"@playwright/test": "^1.32.1",
-		"@rollup/plugin-typescript": "^11.0.0",
+		"@playwright/test": "^1.33.0",
+		"@rollup/plugin-typescript": "^11.1.0",
 		"@types/cli-progress": "^3.11.0",
 		"@types/glob": "^8.1.0",
 		"@types/jasmine": "^4.3.1",
 		"@types/jasminewd2": "^2.0.10",
 		"@types/yargs": "^17.0.24",
-		"@typescript-eslint/eslint-plugin": "^5.57.0",
-		"@typescript-eslint/parser": "^5.57.0",
+		"@typescript-eslint/eslint-plugin": "^5.59.1",
+		"@typescript-eslint/parser": "^5.59.1",
 		"babel-plugin-istanbul": "^6.1.1",
-		"eslint": "^8.37.0",
-		"glob": "^9.3.2",
+		"eslint": "^8.39.0",
+		"glob": "^10.2.2",
 		"nyc": "^15.1.0",
-		"rollup": "^3.20.2",
+		"rollup": "^3.21.2",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.5.0",
-		"typescript": "^5.0.3"
+		"typescript": "^5.0.4"
 	},
 	"dependencies": {
 		"picocolors": "^1.0.0",
 		"protractor": "^7.0.0",
 		"cli-progress": "^3.12.0",
 		"ts-morph": "^18.0.0",
-		"yargs": "^17.7.1"
+		"yargs": "^17.7.2"
 	},
 	"files": [
 		"dist",
