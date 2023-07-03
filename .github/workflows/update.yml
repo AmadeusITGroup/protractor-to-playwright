@@ -15,8 +15,8 @@ jobs:
         with:
           node-version: "16.x"
       - run: npx npm-check-updates -u
-      - run: npm install
-      - run: npm update
+      - run: npm install --ignore-scripts
+      - run: npm update --ignore-scripts
       - name: Create pull request
         uses: peter-evans/create-pull-request@bd72e1b7922d417764d27d30768117ad7da78a0e # v4.0.2
         with:
