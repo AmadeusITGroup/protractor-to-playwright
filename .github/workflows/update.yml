@@ -13,7 +13,7 @@ jobs:
       - name: Set Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
       - run: npx npm-check-updates -u
       - run: npm install --ignore-scripts
       - run: npm update --ignore-scripts
